@@ -6,9 +6,9 @@ public class Robot
 {
     public Coordinate StartingBlock { get; set; }
     public CardinalType Facing { get; set; }
-    public string[] Instructions { get; set; }
+    public char[] Instructions { get; set; }
 
-    public Robot(Coordinate startingBlock, CardinalType facing, string[] instructions)
+    public Robot(Coordinate startingBlock, CardinalType facing, char[] instructions)
     {
         StartingBlock = startingBlock;
         Facing = facing;

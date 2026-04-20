@@ -2,8 +2,9 @@
 
 public enum CardinalType
 {
-    N = 0,
-    E = 1,
-    S = 2,
-    W = 3
+    Unknown= 0, 
+    N = 1,
+    E = 2,
+    S = 3,
+    W = 4
 }
