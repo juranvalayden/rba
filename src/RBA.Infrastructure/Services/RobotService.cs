@@ -9,6 +9,8 @@ public class RobotService : IRobotService
     private readonly IParserService _parserService;
     private readonly IMapService _mapService;
 
+    private readonly HashSet<(Coordinate, CardinalType)> _scents = [];
+
     public RobotService(IParserService parserService, IMapService mapService)
     {
         _parserService = parserService ?? throw new ArgumentNullException(nameof(parserService));
@@ -19,70 +21,78 @@ public class RobotService : IRobotService
     {
         var parsedData = _parserService.Parse(input);
 
-        // validate parsedData
-
         var grid = parsedData.Grid;
-        var robots = parsedData.Robots;
+        var robots = parsedData.Robots.ToList();
+        var results = new List<string>();
 
         foreach (var robot in robots)
         {
-            var robotStartingBlock = robot.StartingBlock;
-            var robotInstructions = robot.Instructions;
-
-            foreach (var robotInstructionType in robotInstructions)
+            foreach (var instruction in robot.Instructions)
             {
-                switch (robotInstructionType)
+                if (robot.IsLost) break;
+
+                switch (instruction)
                 {
-                    case InstructionType.Unknown:
-                        break;
                     case InstructionType.R:
+                        robot.Facing = TurnRight(robot.Facing);
                         break;
                     case InstructionType.L:
+                        robot.Facing = TurnLeft(robot.Facing);
                         break;
                     case InstructionType.F:
+                        robot.CurrentCoordinate = Move(grid, robot);
+                        break;
+                    case InstructionType.Unknown:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
 
-            switch (robot.Facing)
-            {
-                case CardinalType.Unknown:
-                    break;
-                case CardinalType.N:
-                    break;
-                case CardinalType.E:
-                    break;
-                case CardinalType.S:
-                    break;
-                case CardinalType.W:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            results.Add(robot.ToString());
         }
 
-        return [];
+        return results;
     }
 
-    public CardinalType TurnRight(CardinalType currentlyFacing)
+    public bool IsLost(Grid grid, Coordinate coordinate)
     {
-        return _mapService.TurnRight(currentlyFacing);
+        return coordinate.X < 0 ||
+               coordinate.Y < 0 ||
+               coordinate.X > grid.Coordinate.X ||
+               coordinate.Y > grid.Coordinate.Y;
     }
 
-    public CardinalType TurnLeft(CardinalType currentlyFacing)
+    public CardinalType TurnRight(CardinalType facing) =>
+        _mapService.TurnRight(facing);
+
+    public CardinalType TurnLeft(CardinalType facing) =>
+        _mapService.TurnLeft(facing);
+
+    public Coordinate Move(Grid grid, Robot robot)
     {
-        return _mapService.TurnLeft(currentlyFacing);
+        var delta = _mapService.GetUpdateCoordinateWith(robot.Facing);
+        var newCoordinate = new Coordinate(
+            robot.CurrentCoordinate.X + delta.X,
+            robot.CurrentCoordinate.Y + delta.Y
+        );
+
+        var isLost = IsLost(grid, newCoordinate);
+
+        if (!isLost) return newCoordinate;
+
+        var hasScent = HasScent(robot.CurrentCoordinate, robot.Facing);
+
+        if (hasScent) return robot.CurrentCoordinate;
+
+        robot.IsLost = true;
+        AddScent(robot.CurrentCoordinate, robot.Facing);
+        return robot.CurrentCoordinate;
     }
 
-    public Coordinate Move(CardinalType cardinalType, Coordinate currentCoordinates)
-    {
-        var coordinate = _mapService.GetUpdateCoordinateWith(cardinalType);
+    public bool HasScent(Coordinate coordinate, CardinalType facing) =>
+        _scents.Contains((coordinate, facing));
 
-        var newXCoordinate = currentCoordinates.X + coordinate.X;
-        var newYCoordinate = currentCoordinates.Y + coordinate.Y;
-
-        return new Coordinate(newXCoordinate, newYCoordinate);
-    }
+    public void AddScent(Coordinate coordinate, CardinalType facing) => 
+        _scents.Add((coordinate, facing));
 }

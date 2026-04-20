@@ -25,7 +25,7 @@ public class ParserService : IParserService
         return new ParsedData(grid, robots);
     }
 
-    public static ParsedData CreateDefaultParsedData()
+    private static ParsedData CreateDefaultParsedData()
     {
         return new ParsedData(new Grid(new Coordinate(0, 0)), []);
     }

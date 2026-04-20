@@ -47,20 +47,11 @@ public class MapService : IMapService
         return _turnLeftLookup[currentlyFacing];
     }
 
-    public InstructionType GetInstruction(string rawMoveLine)
-    {
-        var isValidInstruction = Enum.TryParse<InstructionType>(rawMoveLine, true, out _);
-
-        if (isValidInstruction)
-        {
-            return _robotInstructionLookup[rawMoveLine];
-        }
-
-        return InstructionType.Unknown;
-    }
+    public InstructionType GetInstructionType(string rawMoveLine) => _robotInstructionLookup.GetValueOrDefault(rawMoveLine, InstructionType.Unknown);
 
     public Coordinate GetUpdateCoordinateWith(CardinalType cardinalType)
     {
-        return _updateCoordinateWithLookup[cardinalType];
+        var coordinateToReturn = _updateCoordinateWithLookup[cardinalType];
+        return new Coordinate(coordinateToReturn.X, coordinateToReturn.Y);
     }
 }

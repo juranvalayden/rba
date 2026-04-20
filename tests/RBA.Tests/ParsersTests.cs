@@ -1,5 +1,4 @@
-﻿using RBA.Domain.Entities;
-using RBA.Infrastructure.Services;
+﻿using RBA.Infrastructure.Services;
 
 namespace RBA.Tests;
 
@@ -10,24 +9,23 @@ public class ParsersTests
     public void SomeMethod_Should_GiveResult(IEnumerable<string> input, IEnumerable<string> expectedResults)
     {
         // Arrange
-        var expectedGridCoordinates = new Coordinate(5, 3);
         var parserService = new ParserService();
         var mapService = new MapService();
 
-        // var parsedData = parserService.Parse(input.ToArray());
-
-        var robotService = new RobotService(parserService, mapService);
+        var sut = new RobotService(parserService, mapService);
 
         // Act
-        var sut = robotService.Execute(input.ToArray());
+        var results = sut.Execute(input.ToArray());
 
         // Assert
-        Assert.NotNull(input);
-        Assert.NotNull(expectedResults);
-        // Assert.NotNull(parsedData.Grid);
-        // Assert.Equal(expectedGridCoordinates, parsedData.Grid.Coordinate);
+        var er = expectedResults.ToArray();
+        int index = 0;
+        foreach (var result in results)
+        {
+            Assert.Equal(result, er[index]);
 
-        // Assert.Equal(sut, expectedResults);
+            ++index;
+        }
     }
 
     public static TheoryData<IEnumerable<string>, IEnumerable<string>> AsPerCodingChallenge() => new()
