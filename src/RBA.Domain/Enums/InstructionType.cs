@@ -1,6 +1,6 @@
 ﻿namespace RBA.Domain.Enums;
 
-public enum MoveType
+public enum InstructionType
 {
     Unknown = 0,
     R = 1,

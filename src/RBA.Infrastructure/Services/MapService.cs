@@ -22,12 +22,19 @@ public class MapService : IMapService
         { CardinalType.E, CardinalType.N }
     };
 
-    private readonly Dictionary<CardinalType, Coordinate> _moveLookup = new()
+    private readonly Dictionary<CardinalType, Coordinate> _updateCoordinateWithLookup = new()
     {
         { CardinalType.N, new Coordinate(0, 1) },
         { CardinalType.W, new Coordinate(-1, 0) },
         { CardinalType.S, new Coordinate(0, -1) },
         { CardinalType.E, new Coordinate(1, 0) }
+    };
+
+    private readonly Dictionary<string, InstructionType> _robotInstructionLookup = new()
+    {
+        { "R", InstructionType.R },
+        { "L", InstructionType.L },
+        { "F", InstructionType.F }
     };
 
     public CardinalType TurnRight(CardinalType currentlyFacing)
@@ -40,13 +47,20 @@ public class MapService : IMapService
         return _turnLeftLookup[currentlyFacing];
     }
 
-    public Coordinate Move(CardinalType cardinalType, Coordinate currentCoordinates)
+    public InstructionType GetInstruction(string rawMoveLine)
     {
-        var updateCoordinates = _moveLookup[cardinalType];
+        var isValidInstruction = Enum.TryParse<InstructionType>(rawMoveLine, true, out _);
 
-        var newXCoordinate = currentCoordinates.X + updateCoordinates.X;
-        var newYCoordinate = currentCoordinates.Y + updateCoordinates.Y;
+        if (isValidInstruction)
+        {
+            return _robotInstructionLookup[rawMoveLine];
+        }
 
-        return new Coordinate(newXCoordinate, newYCoordinate);
+        return InstructionType.Unknown;
+    }
+
+    public Coordinate GetUpdateCoordinateWith(CardinalType cardinalType)
+    {
+        return _updateCoordinateWithLookup[cardinalType];
     }
 }

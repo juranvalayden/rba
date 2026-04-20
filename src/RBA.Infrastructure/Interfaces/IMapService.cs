@@ -7,5 +7,6 @@ public interface IMapService
 {
     CardinalType TurnRight(CardinalType currentlyFacing);
     CardinalType TurnLeft(CardinalType currentlyFacing);
-    Coordinate Move(CardinalType cardinalType, Coordinate currentCoordinates);
+    InstructionType GetInstruction(string rawMoveLine);
+    Coordinate GetUpdateCoordinateWith(CardinalType cardinalType);
 }

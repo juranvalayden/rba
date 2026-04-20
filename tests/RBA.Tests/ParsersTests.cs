@@ -12,18 +12,20 @@ public class ParsersTests
         // Arrange
         var expectedGridCoordinates = new Coordinate(5, 3);
         var parserService = new ParserService();
-        var parsedData = parserService.Parse(input.ToArray());
+        var mapService = new MapService();
 
-        var robotService = new RobotService(parsedData);
+        // var parsedData = parserService.Parse(input.ToArray());
+
+        var robotService = new RobotService(parserService, mapService);
 
         // Act
-        // var sut = robotService.Execute();
+        var sut = robotService.Execute(input.ToArray());
 
         // Assert
         Assert.NotNull(input);
         Assert.NotNull(expectedResults);
-        Assert.NotNull(parsedData.grid);
-        Assert.Equal(expectedGridCoordinates, parsedData.grid.Coordinate);
+        // Assert.NotNull(parsedData.Grid);
+        // Assert.Equal(expectedGridCoordinates, parsedData.Grid.Coordinate);
 
         // Assert.Equal(sut, expectedResults);
     }

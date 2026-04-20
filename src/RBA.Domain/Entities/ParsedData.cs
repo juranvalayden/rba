@@ -1,3 +1,3 @@
 ﻿namespace RBA.Domain.Entities;
 
-public record ParsedData(Grid grid, IEnumerable<Robot> Robots);
+public record ParsedData(Grid Grid, IEnumerable<Robot> Robots);

@@ -8,11 +8,11 @@ public class ParserService : IParserService
 {
     public ParsedData Parse(string[] lines)
     {
-        if (lines.Length == 0) return null;
+        if (lines.Length == 0) return CreateDefaultParsedData();
 
         var rawGridLine = lines.FirstOrDefault();
 
-        if (rawGridLine is null) return null;
+        if (rawGridLine is null) return CreateDefaultParsedData();
 
         var grid = CreateGrid(rawGridLine);
 
@@ -23,6 +23,11 @@ public class ParserService : IParserService
             .Select(chunk => CreateRobot(chunk[0], chunk[1]));
 
         return new ParsedData(grid, robots);
+    }
+
+    public static ParsedData CreateDefaultParsedData()
+    {
+        return new ParsedData(new Grid(new Coordinate(0, 0)), []);
     }
 
     private static Robot CreateRobot(string rawStartingBlockString, string rawRobotInstructions)
@@ -37,15 +42,21 @@ public class ParserService : IParserService
 
         if (!isValidFacingCardinalType) return CreateDefaultRobot();
 
-        var robotInstructions = rawRobotInstructions.ToCharArray();
-
-        var areValidRobotInstructions = robotInstructions
-            .Select(x => Enum.TryParse<MoveType>(rawRobotInstructions, true, out _))
+        var robotInstructions = rawRobotInstructions
+            .Select(MapInstructions)
             .ToList();
 
-        return areValidRobotInstructions.Any(x => x) 
-            ? new Robot(startingCoordinates, facing, rawRobotInstructions.ToCharArray()) 
+        var areValidRobotInstructions = !robotInstructions.Contains(InstructionType.Unknown);
+
+        return areValidRobotInstructions
+            ? new Robot(startingCoordinates, facing, robotInstructions)
             : CreateDefaultRobot();
+    }
+
+    private static InstructionType MapInstructions(char rawMoveLine)
+    {
+        var isValidInstruction = Enum.TryParse(rawMoveLine.ToString(), true, out InstructionType instructionType);
+        return isValidInstruction ? instructionType : InstructionType.Unknown;
     }
 
     private static Robot CreateDefaultRobot()
