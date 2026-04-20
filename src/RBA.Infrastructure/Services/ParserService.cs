@@ -6,7 +6,7 @@ namespace RBA.Infrastructure.Services;
 
 public class ParserService : IParserService
 {
-    public ParsedData? Parse(string[] lines)
+    public ParsedData Parse(string[] lines)
     {
         if (lines.Length == 0) return null;
 
