@@ -6,16 +6,12 @@ namespace RBA.Infrastructure.Services;
 
 public class ValidationService : IValidationService
 {
+    private const int _maxRobotInstructionLength = 100;
+    private const int _intMaxCoordinateValue = 50;
+
     public Grid ValidateGrid(string line)
     {
-        var lineData = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        var isValidX = int.TryParse(lineData[0], out var x);
-        var isValidY = int.TryParse(lineData[1], out var y);
-
-        if (!isValidX || !isValidY) throw new InvalidOperationException("Invalid coordinates.");
-
-        var gridCoordinates = new Coordinate(x, y);
+        var gridCoordinates = ValidateCoordinates(line);
 
         var isInvalidGrid = gridCoordinates.X == gridCoordinates.Y;
 
@@ -39,14 +35,7 @@ public class ValidationService : IValidationService
 
     public Coordinate ValidateStartingBlock(Grid grid, string line)
     {
-        var lineData = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        var isValidX = int.TryParse(lineData[0], out var x);
-        var isValidY = int.TryParse(lineData[1], out var y);
-
-        if (!isValidX || !isValidY) throw new InvalidOperationException("Invalid coordinates.");
-
-        var startingCoordinates = new Coordinate(x, y);
+        var startingCoordinates = ValidateCoordinates(line);
 
         var isLost = startingCoordinates.X > grid.Coordinate.X || startingCoordinates.Y > grid.Coordinate.Y;
 
@@ -55,12 +44,29 @@ public class ValidationService : IValidationService
             : startingCoordinates;
     }
 
+    public Coordinate ValidateCoordinates(string line)
+    {
+        var lineData = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        var isValidX = int.TryParse(lineData[0], out var x);
+        var isValidY = int.TryParse(lineData[1], out var y);
+
+        if (!isValidX || !isValidY) throw new InvalidOperationException("Invalid coordinates.");
+
+        if (x > _intMaxCoordinateValue || y > _intMaxCoordinateValue)
+        {
+            throw new InvalidOperationException($"Coordinate values should be <= {_intMaxCoordinateValue}.");
+        }
+
+        return new Coordinate(x, y);
+    }
+
     public InstructionType[] ValidateRobotInstructions(string line)
     {
         if (string.IsNullOrWhiteSpace(line))
             throw new InvalidOperationException("No robot instructions can be found.");
 
-        if (line.Length > 100)
+        if (line.Length > _maxRobotInstructionLength)
             throw new InvalidOperationException("Robot instruction length exceeded 100.");
 
         var instructions = new List<InstructionType>();

@@ -2,6 +2,7 @@
 using RBA.Domain.Enums;
 using RBA.Infrastructure.Services;
 using RBA.Tests.TestData;
+using Xunit;
 
 namespace RBA.Tests.ServiceTests;
 
@@ -14,10 +15,10 @@ public class ValidationServiceTests
     public void ValidateGrid_ShouldThrow_ForInvalidInputs(string line, string expectedMessage)
     {
         // Arrange & Act
-        var ex = Assert.Throws<InvalidOperationException>(() => _sut.ValidateGrid(line));
+        var expectedException = Assert.Throws<InvalidOperationException>(() => _sut.ValidateGrid(line));
 
         // Assert
-        Assert.Equal(expectedMessage, ex.Message);
+        Assert.Equal(expectedMessage, expectedException.Message);
     }
 
     [Theory]
@@ -37,10 +38,10 @@ public class ValidationServiceTests
     public void ValidateCardinalType_ShouldThrow_ForInvalidInputs(string line, string expectedMessage)
     {
         // Arrange & Act
-        var ex = Assert.Throws<InvalidOperationException>(() => _sut.ValidateCardinalType(line));
+        var expectedException = Assert.Throws<InvalidOperationException>(() => _sut.ValidateCardinalType(line));
 
         // Assert
-        Assert.Equal(expectedMessage, ex.Message);
+        Assert.Equal(expectedMessage, expectedException.Message);
     }
 
     [Theory]
@@ -48,39 +49,35 @@ public class ValidationServiceTests
     public void ValidateCardinalType_ShouldReturnCardinal_ForValidInputs(string line, CardinalType expectedFacing)
     {
         // Arrange & Act
-        var facing = _sut.ValidateCardinalType(line);
+        var result = _sut.ValidateCardinalType(line);
 
         // Assert
-        Assert.Equal(expectedFacing, facing);
+        Assert.Equal(expectedFacing, result);
     }
 
     [Theory]
     [MemberData(nameof(ValidationTestData.InvalidStartingBlockData), MemberType = typeof(ValidationTestData))]
     public void ValidateStartingBlock_ShouldThrow_ForInvalidInputs(string line, string expectedMessage)
     {
-        // Arrange
+        // Arrange & Act
         var grid = new Grid(new Coordinate(20, 12));
-
-        // Act
-        var ex = Assert.Throws<InvalidOperationException>(() => _sut.ValidateStartingBlock(grid, line));
+        var expectedException = Assert.Throws<InvalidOperationException>(() => _sut.ValidateStartingBlock(grid, line));
 
         // Assert
-        Assert.Equal(expectedMessage, ex.Message);
+        Assert.Equal(expectedMessage, expectedException.Message);
     }
 
     [Theory]
     [MemberData(nameof(ValidationTestData.ValidStartingBlockData), MemberType = typeof(ValidationTestData))]
     public void ValidateStartingBlock_ShouldReturnCoordinate_ForValidInputs(string line, int expectedX, int expectedY)
     {
-        // Arrange
+        // Arrange & Act
         var grid = new Grid(new Coordinate(20, 12));
-
-        // Act
-        var coord = _sut.ValidateStartingBlock(grid, line);
+        var result = _sut.ValidateStartingBlock(grid, line);
 
         // Assert
-        Assert.Equal(expectedX, coord.X);
-        Assert.Equal(expectedY, coord.Y);
+        Assert.Equal(expectedX, result.X);
+        Assert.Equal(expectedY, result.Y);
     }
 
     [Theory]
@@ -88,10 +85,10 @@ public class ValidationServiceTests
     public void ValidateRobotInstructions_ShouldThrow_ForInvalidInputs(string line, string expectedMessage)
     {
         // Arrange & Act
-        var ex = Assert.Throws<InvalidOperationException>(() => _sut.ValidateRobotInstructions(line));
+        var expectedException = Assert.Throws<InvalidOperationException>(() => _sut.ValidateRobotInstructions(line));
 
         // Assert
-        Assert.Equal(expectedMessage, ex.Message);
+        Assert.Equal(expectedMessage, expectedException.Message);
     }
 
     [Theory]
@@ -99,9 +96,32 @@ public class ValidationServiceTests
     public void ValidateRobotInstructions_ShouldReturnInstructions_ForValidInputs(string line, int expectedCount)
     {
         // Arrange & Act
-        var instructions = _sut.ValidateRobotInstructions(line);
+        var result = _sut.ValidateRobotInstructions(line);
 
         // Assert
-        Assert.Equal(expectedCount, instructions.Length);
+        Assert.Equal(expectedCount, result.Length);
+    }
+
+    [Theory]
+    [MemberData(nameof(ValidationTestData.InvalidCoordinateData), MemberType = typeof(ValidationTestData))]
+    public void ValidateCoordinates_ShouldThrow_ForInvalidInputs(string line, Type expectedExceptionType, string expectedMessagePart)
+    {
+        // Arrange & Act
+        var expectedException = Assert.Throws(expectedExceptionType, () => _sut.ValidateCoordinates(line));
+
+        // Assert
+        Assert.Contains(expectedMessagePart, expectedException.Message);
+    }
+
+    [Theory]
+    [MemberData(nameof(ValidationTestData.ValidCoordinateData), MemberType = typeof(ValidationTestData))]
+    public void ValidateCoordinates_ShouldReturnCoordinate_ForValidInputs(string line, int expectedX, int expectedY)
+    {
+        // Arrange & Act
+        var result = _sut.ValidateCoordinates(line);
+
+        // Assert
+        Assert.Equal(expectedX, result.X);
+        Assert.Equal(expectedY, result.Y);
     }
 }
