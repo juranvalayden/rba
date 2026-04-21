@@ -1,11 +1,38 @@
-﻿using RBA.Infrastructure.Services;
+﻿using Moq;
+using RBA.Infrastructure.Interfaces;
+using RBA.Infrastructure.Services;
 
 namespace RBA.Tests;
 
 public class ParsersTests
 {
-    // I would normally moq these
-    private readonly RobotService _sut = new(new ParserService(), new MapService());
+    private readonly Mock<IParserService> _parserService = new();
+    private readonly Mock<IMapService> _mapService = new();
+    private readonly RobotService _sut;
+
+    private static readonly IEnumerable<string> _sampleData = [
+        "5 3",
+        "",
+        "1 1 E",
+        "RFRFRFRF",
+        "",
+        "3 2 N",
+        "FRRFLLFFRRFLL",
+        "",
+        "0 3 W",
+        "LLFFFLFLFL",
+        ""
+    ];
+    private static readonly IEnumerable<string> _sampleDataExpectedResults = [
+        "1 1 E",
+        "3 3 N LOST",
+        "2 3 S"
+    ];
+
+    public ParsersTests()
+    {
+        _sut = new RobotService(_parserService.Object, _mapService.Object);
+    }
 
     [Theory]
     [MemberData(nameof(AsPerCodingChallenge))]
@@ -31,24 +58,4 @@ public class ParsersTests
     {
         { _sampleData, _sampleDataExpectedResults }
     };
-
-    private static readonly IEnumerable<string> _sampleData = [
-        "5 3",
-        "",
-        "1 1 E",
-        "RFRFRFRF",
-        "",
-        "3 2 N",
-        "FRRFLLFFRRFLL",
-        "",
-        "0 3 W",
-        "LLFFFLFLFL",
-        ""
-    ];
-
-    private static readonly IEnumerable<string> _sampleDataExpectedResults = [
-        "1 1 E",
-        "3 3 N LOST",
-        "2 3 S"
-    ];
 }
