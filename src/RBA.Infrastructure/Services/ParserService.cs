@@ -6,33 +6,33 @@ namespace RBA.Infrastructure.Services;
 
 public class ParserService : IParserService
 {
-    public ParsedData Parse(string[] lines)
+    public IEnumerable<RobotDataSet> Parse(string[] lines)
     {
-        if (lines.Length == 0) return CreateDefaultParsedData();
+        if (lines.Length == 0) return CreateDefaultRobotData();
 
         var rawGridLine = lines.FirstOrDefault();
 
-        if (rawGridLine is null) return CreateDefaultParsedData();
+        if (rawGridLine is null) return CreateDefaultRobotData();
 
         var grid = CreateGrid(rawGridLine);
 
-        var robots = lines
+        var robotData = lines
             .Skip(1)
             .Where(l => !string.IsNullOrWhiteSpace(l))
             .Chunk(2)
-            .Select(chunk => CreateRobot(chunk[0], chunk[1]));
+            .Select(chunk => CreateRobotData(grid, chunk[0], chunk[1]));
 
-        return new ParsedData(grid, robots);
+        return robotData;
     }
 
-    private static ParsedData CreateDefaultParsedData()
+    private static IEnumerable<RobotDataSet> CreateDefaultRobotData()
     {
-        return new ParsedData(new Grid(new Coordinate(0, 0)), []);
+        return [];
     }
 
-    private static Robot CreateRobot(string rawStartingBlockString, string rawRobotInstructions)
+    private RobotDataSet CreateRobotData(Grid grid, string rawStartingBlockString, string rawRobotInstructions)
     {
-        var startingCoordinates = CreateCoordinate(rawStartingBlockString);
+        var startingCoordinates = ParseCoordinate(rawStartingBlockString);
 
         var rawStaringBlockData = rawStartingBlockString.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
 
@@ -48,8 +48,10 @@ public class ParserService : IParserService
 
         var areValidRobotInstructions = !robotInstructions.Contains(InstructionType.Unknown);
 
+        var robot = new Robot(startingCoordinates, facing);
+
         return areValidRobotInstructions
-            ? new Robot(startingCoordinates, facing, robotInstructions)
+            ? new RobotDataSet(grid, startingCoordinates, robot, robotInstructions)
             : CreateDefaultRobot();
     }
 
@@ -59,9 +61,13 @@ public class ParserService : IParserService
         return isValidInstruction ? instructionType : InstructionType.Unknown;
     }
 
-    private static Robot CreateDefaultRobot()
+    private static RobotDataSet CreateDefaultRobot()
     {
-        return new Robot(new Coordinate(0, 0), CardinalType.N, []);
+        var defaultCoordinate = new Coordinate(0, 0);
+        var defaultGrid = new Grid(defaultCoordinate);
+        var defaultRobot = new Robot(defaultCoordinate, CardinalType.N);
+
+        return new RobotDataSet(defaultGrid, defaultCoordinate, defaultRobot, []);
     }
 
     private Grid CreateGrid(string rawGridLine)
@@ -69,11 +75,12 @@ public class ParserService : IParserService
         // validation to be fleshed out
         // should have spaces and have exactly 2 items
         // lineData[0] and lineData[1] should be valid ints
-        var coordinate = CreateCoordinate(rawGridLine);
+        var coordinate = ParseCoordinate(rawGridLine);
+
         return new Grid(coordinate);
     }
 
-    private static Coordinate CreateCoordinate(string rawCoordinateLine)
+    private static Coordinate ParseCoordinate(string rawCoordinateLine)
     {
         var lineData = rawCoordinateLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 

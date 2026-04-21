@@ -4,63 +4,51 @@ using RBA.Infrastructure.Interfaces;
 
 namespace RBA.Infrastructure.Services;
 
-public class RobotService : IRobotService
+public class RobotService(IParserService parserService, IMapService mapService) : IRobotService
 {
-    private readonly IParserService _parserService;
-    private readonly IMapService _mapService;
+    private readonly IParserService _parserService = parserService ?? throw new ArgumentNullException(nameof(parserService));
+    private readonly IMapService _mapService = mapService ?? throw new ArgumentNullException(nameof(mapService));
 
-    private readonly HashSet<(Coordinate, CardinalType)> _scents = [];
-
-    public RobotService(IParserService parserService, IMapService mapService)
+    public IEnumerable<string> Execute(string[] rawInput)
     {
-        _parserService = parserService ?? throw new ArgumentNullException(nameof(parserService));
-        _mapService = mapService ?? throw new ArgumentNullException(nameof(mapService));
+        var robotDataSets = _parserService
+            .Parse(rawInput)
+            .ToList();
+
+        return robotDataSets
+            .Select(x => ProcessRobotDataSet(x.Grid, x.Robot, x.Instructions));
     }
 
-    public IEnumerable<string> Execute(string[] input)
+    private string ProcessRobotDataSet(Grid grid, Robot robot, IEnumerable<InstructionType> instructions)
     {
-        var parsedData = _parserService.Parse(input);
-
-        var grid = parsedData.Grid;
-        var robots = parsedData.Robots.ToList();
-        var results = new List<string>();
-
-        foreach (var robot in robots)
+        foreach (var instruction in instructions)
         {
-            foreach (var instruction in robot.Instructions)
-            {
-                if (robot.IsLost) break;
+            if (robot.IsLost) break;
 
-                switch (instruction)
-                {
-                    case InstructionType.R:
-                        robot.Facing = TurnRight(robot.Facing);
-                        break;
-                    case InstructionType.L:
-                        robot.Facing = TurnLeft(robot.Facing);
-                        break;
-                    case InstructionType.F:
-                        robot.CurrentCoordinate = Move(grid, robot);
-                        break;
-                    case InstructionType.Unknown:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            results.Add(robot.ToString());
+            ExecuteInstruction(grid, robot, instruction);
         }
 
-        return results;
+        return robot.ToString();
     }
 
-    public bool IsLost(Grid grid, Coordinate coordinate)
+    public void ExecuteInstruction(Grid grid, Robot robot, InstructionType instruction)
     {
-        return coordinate.X < 0 ||
-               coordinate.Y < 0 ||
-               coordinate.X > grid.Coordinate.X ||
-               coordinate.Y > grid.Coordinate.Y;
+        switch (instruction)
+        {
+            case InstructionType.R:
+                robot.Facing = TurnRight(robot.Facing);
+                break;
+            case InstructionType.L:
+                robot.Facing = TurnLeft(robot.Facing);
+                break;
+            case InstructionType.F:
+                robot.CurrentCoordinate = Move(grid, robot);
+                break;
+            case InstructionType.Unknown:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(instruction), instruction, null);
+        }
     }
 
     public CardinalType TurnRight(CardinalType facing) =>
@@ -71,28 +59,26 @@ public class RobotService : IRobotService
 
     public Coordinate Move(Grid grid, Robot robot)
     {
-        var delta = _mapService.GetUpdateCoordinateWith(robot.Facing);
-        var newCoordinate = new Coordinate(
-            robot.CurrentCoordinate.X + delta.X,
-            robot.CurrentCoordinate.Y + delta.Y
-        );
+        var updateCoordinateWith = _mapService.GetUpdateCoordinateWith(robot.Facing);
+        var newCoordinate = new Coordinate(robot.CurrentCoordinate.X + updateCoordinateWith.X, robot.CurrentCoordinate.Y + updateCoordinateWith.Y);
 
-        var isLost = IsLost(grid, newCoordinate);
+        var isLost = CheckIfLost(grid.Coordinate, newCoordinate);
 
         if (!isLost) return newCoordinate;
 
-        var hasScent = HasScent(robot.CurrentCoordinate, robot.Facing);
-
+        var hasScent = grid.HasScent(robot.CurrentCoordinate, robot.Facing);
         if (hasScent) return robot.CurrentCoordinate;
 
         robot.IsLost = true;
-        AddScent(robot.CurrentCoordinate, robot.Facing);
+        grid.AddScent(robot.CurrentCoordinate, robot.Facing);
         return robot.CurrentCoordinate;
     }
 
-    public bool HasScent(Coordinate coordinate, CardinalType facing) =>
-        _scents.Contains((coordinate, facing));
-
-    public void AddScent(Coordinate coordinate, CardinalType facing) => 
-        _scents.Add((coordinate, facing));
+    public bool CheckIfLost(Coordinate gridCoordinate, Coordinate newCoordinate)
+    {
+        return newCoordinate.X < 0 || 
+               newCoordinate.Y < 0 ||
+               newCoordinate.X > gridCoordinate.X ||
+               newCoordinate.Y > gridCoordinate.Y;
+    }
 }

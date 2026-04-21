@@ -5,11 +5,13 @@ namespace RBA.Infrastructure.Interfaces;
 
 public interface IRobotService
 {
+    IEnumerable<string> Execute(string[] rawInput);
+
+    void ExecuteInstruction(Grid grid, Robot robot, InstructionType instruction);
+
     CardinalType TurnRight(CardinalType currentlyFacing);
     CardinalType TurnLeft(CardinalType currentlyFacing);
     Coordinate Move(Grid grid, Robot robot);
 
-    bool IsLost(Grid grid, Coordinate currentCoordinate);
-    bool HasScent(Coordinate coordinate, CardinalType facing);
-    void AddScent(Coordinate coordinate, CardinalType facing);
+    bool CheckIfLost(Coordinate gridCoordinate, Coordinate newCoordinate);
 }

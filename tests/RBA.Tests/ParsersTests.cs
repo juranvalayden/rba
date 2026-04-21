@@ -1,29 +1,29 @@
-﻿using RBA.Infrastructure.Services;
+﻿using RBA.Infrastructure.Interfaces;
+using RBA.Infrastructure.Services;
 
 namespace RBA.Tests;
 
 public class ParsersTests
 {
+    // I would normally moq these
+    private readonly RobotService _sut = new(new ParserService(), new MapService());
+
     [Theory]
     [MemberData(nameof(AsPerCodingChallenge))]
-    public void SomeMethod_Should_GiveResult(IEnumerable<string> input, IEnumerable<string> expectedResults)
+    public void Execute_Should_ProduceTheSampleOutputAsCodingExercise(IEnumerable<string> input, IEnumerable<string> expectedResults)
     {
         // Arrange
-        var parserService = new ParserService();
-        var mapService = new MapService();
-
-        var sut = new RobotService(parserService, mapService);
+        var sampleInputData = input.ToArray();
+        var sampleExpectedResults = expectedResults.ToArray();
 
         // Act
-        var results = sut.Execute(input.ToArray());
+        var results = _sut.Execute(sampleInputData);
 
         // Assert
-        var er = expectedResults.ToArray();
-        int index = 0;
+        var index = 0;
         foreach (var result in results)
         {
-            Assert.Equal(result, er[index]);
-
+            Assert.Equal(result, sampleExpectedResults[index]);
             ++index;
         }
     }
