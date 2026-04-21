@@ -2,6 +2,7 @@
   <Folder Name="/solution items/">
     <File Path="README.md" />
   </Folder>
+  <Folder Name="/solution items/test data/" />
   <Folder Name="/src/" />
   <Folder Name="/src/1 - Presentation/" />
   <Folder Name="/src/2 - Application/" />

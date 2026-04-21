@@ -4,32 +4,13 @@ using RBA.Infrastructure.Services;
 
 namespace RBA.Tests;
 
-public class ParsersTests
+public class RobotTests
 {
     private readonly Mock<IParserService> _parserService = new();
     private readonly Mock<IMapService> _mapService = new();
     private readonly RobotService _sut;
 
-    private static readonly IEnumerable<string> _sampleData = [
-        "5 3",
-        "",
-        "1 1 E",
-        "RFRFRFRF",
-        "",
-        "3 2 N",
-        "FRRFLLFFRRFLL",
-        "",
-        "0 3 W",
-        "LLFFFLFLFL",
-        ""
-    ];
-    private static readonly IEnumerable<string> _sampleDataExpectedResults = [
-        "1 1 E",
-        "3 3 N LOST",
-        "2 3 S"
-    ];
-
-    public ParsersTests()
+    public RobotTests()
     {
         _sut = new RobotService(_parserService.Object, _mapService.Object);
     }
@@ -56,6 +37,6 @@ public class ParsersTests
 
     public static TheoryData<IEnumerable<string>, IEnumerable<string>> AsPerCodingChallenge() => new()
     {
-        { _sampleData, _sampleDataExpectedResults }
+        { TestData.GetSampleData, TestData.GetSampleExpectedResults }
     };
 }
