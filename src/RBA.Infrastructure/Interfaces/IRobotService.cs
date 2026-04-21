@@ -5,7 +5,7 @@ namespace RBA.Infrastructure.Interfaces;
 
 public interface IRobotService
 {
-    IEnumerable<string> Execute(string[] rawInput);
+    string[] Execute(string[] rawInput);
 
     void ExecuteInstruction(Grid grid, Robot robot, InstructionType instruction);
 

@@ -1,6 +1,6 @@
-﻿namespace RBA.Tests;
+﻿namespace RBA.Tests.TestData;
 
-public static class TestData
+public static class RobotTestData
 {
     private static readonly string[] _sampleData =
     [
@@ -111,14 +111,12 @@ public static class TestData
         "12 12 N"
     ];
 
-    public static IEnumerable<string> GetSampleData => _sampleData;
+    public static List<object[]> SampleData => [[_sampleData, _sampleDataExpectedResults]];
 
-    public static IEnumerable<string> GetSampleExpectedResults => _sampleDataExpectedResults;
-
-    public static TheoryData<IEnumerable<string>, IEnumerable<string>> GeneratedDataSets() => new()
-    {
-        { _generatedData1, _generatedExpectedResults1 },
-        { _generatedData2, _generatedExpectedResults2 },
-        { _generatedData3, _generatedExpectedResults3 }
-    };
+    public static List<object[]> GeneratedData =>
+    [
+        [_generatedData1, _generatedExpectedResults1],
+        [_generatedData2, _generatedExpectedResults2],
+        [_generatedData3, _generatedExpectedResults3]
+    ];
 }

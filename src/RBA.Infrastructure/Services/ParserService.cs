@@ -1,97 +1,44 @@
 ﻿using RBA.Domain.Entities;
-using RBA.Domain.Enums;
 using RBA.Infrastructure.Interfaces;
 
 namespace RBA.Infrastructure.Services;
 
-public class ParserService : IParserService
+public class ParserService(IValidationService validationService) : IParserService
 {
-    public IEnumerable<RobotDataSet> Parse(string[] lines)
+    private readonly IValidationService _validationService = validationService ?? throw new ArgumentNullException(nameof(validationService));
+
+    public RobotDataSet[] Parse(string[] lines)
     {
-        if (lines.Length == 0) return CreateDefaultRobotData();
+        if (lines.Length == 0) throw new ArgumentNullException(nameof(lines));
 
         var rawGridLine = lines.FirstOrDefault();
 
-        if (rawGridLine is null) return CreateDefaultRobotData();
+        if (rawGridLine is null) throw new InvalidOperationException("No grid line found.");
 
-        var grid = CreateGrid(rawGridLine);
+        var grid = _validationService.ValidateGrid(rawGridLine);
 
-        var robotData = lines
+        var robotDataSets = lines
             .Skip(1)
             .Where(l => !string.IsNullOrWhiteSpace(l))
             .Chunk(2)
-            .Select(chunk => CreateRobotData(grid, chunk[0], chunk[1]));
+            .Select(chunk => CreateRobotData(grid, chunk[0], chunk[1]))
+            .ToArray();
 
-        return robotData;
-    }
-
-    private static IEnumerable<RobotDataSet> CreateDefaultRobotData()
-    {
-        return [];
+        return robotDataSets.Length == 0
+            ? throw new InvalidOperationException("Robot data sets not created.")
+            : robotDataSets;
     }
 
     private RobotDataSet CreateRobotData(Grid grid, string rawStartingBlockString, string rawRobotInstructions)
     {
-        var startingCoordinates = ParseCoordinate(rawStartingBlockString);
+        var startingBlock = _validationService.ValidateStartingBlock(grid, rawStartingBlockString);
 
-        var rawStaringBlockData = rawStartingBlockString.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+        var facing = _validationService.ValidateCardinalType(rawStartingBlockString);
 
-        if (rawStaringBlockData is null) return CreateDefaultRobot();
+        var robotInstructions = _validationService.ValidateRobotInstructions(rawRobotInstructions);
 
-        var isValidFacingCardinalType = Enum.TryParse<CardinalType>(rawStaringBlockData, true, out var facing);
+        var robot = new Robot(startingBlock, facing);
 
-        if (!isValidFacingCardinalType) return CreateDefaultRobot();
-
-        var robotInstructions = rawRobotInstructions
-            .Select(MapInstructions)
-            .ToList();
-
-        var areValidRobotInstructions = !robotInstructions.Contains(InstructionType.Unknown);
-
-        var robot = new Robot(startingCoordinates, facing);
-
-        return areValidRobotInstructions
-            ? new RobotDataSet(grid, startingCoordinates, robot, robotInstructions)
-            : CreateDefaultRobot();
-    }
-
-    private static InstructionType MapInstructions(char rawMoveLine)
-    {
-        var isValidInstruction = Enum.TryParse(rawMoveLine.ToString(), true, out InstructionType instructionType);
-        return isValidInstruction ? instructionType : InstructionType.Unknown;
-    }
-
-    private static RobotDataSet CreateDefaultRobot()
-    {
-        var defaultCoordinate = new Coordinate(0, 0);
-        var defaultGrid = new Grid(defaultCoordinate);
-        var defaultRobot = new Robot(defaultCoordinate, CardinalType.N);
-
-        return new RobotDataSet(defaultGrid, defaultCoordinate, defaultRobot, []);
-    }
-
-    private static Grid CreateGrid(string rawGridLine)
-    {
-        // validation to be fleshed out
-        // should have spaces and have exactly 2 items
-        // lineData[0] and lineData[1] should be valid ints
-        var coordinate = ParseCoordinate(rawGridLine);
-
-        return new Grid(coordinate);
-    }
-
-    private static Coordinate ParseCoordinate(string rawCoordinateLine)
-    {
-        var lineData = rawCoordinateLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        var isValidX = int.TryParse(lineData[0], out var x);
-        var isValidY = int.TryParse(lineData[1], out var y);
-
-        if (isValidX && isValidY)
-        {
-            return new Coordinate(x, y);
-        }
-
-        return new Coordinate(0, 0);
+        return new RobotDataSet(grid, startingBlock, robot, robotInstructions);
     }
 }

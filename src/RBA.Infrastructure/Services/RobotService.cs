@@ -9,18 +9,23 @@ public class RobotService(IParserService parserService, IMapService mapService) 
     private readonly IParserService _parserService = parserService ?? throw new ArgumentNullException(nameof(parserService));
     private readonly IMapService _mapService = mapService ?? throw new ArgumentNullException(nameof(mapService));
 
-    public IEnumerable<string> Execute(string[] rawInput)
+    public string[] Execute(string[] rawInput)
     {
         var robotDataSets = _parserService
             .Parse(rawInput)
             .ToList();
 
         return robotDataSets
-            .Select(x => ProcessRobotDataSet(x.Grid, x.Robot, x.Instructions));
+            .Select(x => ProcessRobotDataSet(x.Grid, x.Robot, x.Instructions))
+            .ToArray();
     }
 
     private string ProcessRobotDataSet(Grid grid, Robot robot, IEnumerable<InstructionType> instructions)
     {
+        CheckIfLost(grid.Coordinate, robot.CurrentCoordinate);
+        
+        if (robot.IsLost) return robot.ToString();
+
         foreach (var instruction in instructions)
         {
             if (robot.IsLost) break;
