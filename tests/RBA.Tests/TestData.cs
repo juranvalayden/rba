@@ -112,7 +112,9 @@ public static class TestData
     ];
 
     public static IEnumerable<string> GetSampleData => _sampleData;
+
     public static IEnumerable<string> GetSampleExpectedResults => _sampleDataExpectedResults;
+
     public static TheoryData<IEnumerable<string>, IEnumerable<string>> GeneratedDataSets() => new()
     {
         { _generatedData1, _generatedExpectedResults1 },
