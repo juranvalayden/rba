@@ -1,5 +1,4 @@
-﻿using RBA.Infrastructure.Interfaces;
-using RBA.Infrastructure.Services;
+﻿using RBA.Infrastructure.Services;
 
 namespace RBA.Tests;
 

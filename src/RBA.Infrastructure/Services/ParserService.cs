@@ -70,7 +70,7 @@ public class ParserService : IParserService
         return new RobotDataSet(defaultGrid, defaultCoordinate, defaultRobot, []);
     }
 
-    private Grid CreateGrid(string rawGridLine)
+    private static Grid CreateGrid(string rawGridLine)
     {
         // validation to be fleshed out
         // should have spaces and have exactly 2 items
