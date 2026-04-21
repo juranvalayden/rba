@@ -30,7 +30,27 @@ public class RobotTests
         var index = 0;
         foreach (var result in results)
         {
-            Assert.Equal(result, sampleExpectedResults[index]);
+            Assert.Equal(sampleExpectedResults[index], result);
+            ++index;
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(UseGeneratedData))]
+    public void Execute_Should_UseGeneratedDataTest(IEnumerable<string> input, IEnumerable<string> expectedResults)
+    {
+        // Arrange
+        var sampleInputData = input.ToArray();
+        var sampleExpectedResults = expectedResults.ToArray();
+
+        // Act
+        var results = _sut.Execute(sampleInputData);
+
+        // Assert
+        var index = 0;
+        foreach (var result in results)
+        {
+            Assert.Equal(sampleExpectedResults[index], result);
             ++index;
         }
     }
@@ -39,4 +59,6 @@ public class RobotTests
     {
         { TestData.GetSampleData, TestData.GetSampleExpectedResults }
     };
+
+    public static TheoryData<IEnumerable<string>, IEnumerable<string>> UseGeneratedData() => TestData.GeneratedDataSets();
 }
