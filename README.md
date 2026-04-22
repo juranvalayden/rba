@@ -1,20 +1,20 @@
 # RBA
 An implementation of the **Martian Robots** problem, following the provided specification.
 
----
-
 ## Planning – Thought Process & Assumptions
 
-### Grid Data (Line 1)
-**Business Rules & Validations**
+### Line 1 - Grid Data
+
 - Space-separated values  
 - Maximum length: 3 tokens  
 - Index 0 and 2 must be integers  
 - Grid must be rectangular → `X != Y`
 
-### Robot Data Sets (Lines 2–4)
-**Line 2**  
+### Line 2 - Blank Line
+
 - Sections off single grid data for subsequent `RobotDataSet(s)`
+
+### Line 3 & 4 Robot Data Sets
 
 **Line 3 – Starting Block / Initial Position**
 - Space-separated values  
@@ -26,12 +26,15 @@ An implementation of the **Martian Robots** problem, following the provided spec
 - String input, maximum length: 100 characters  
 - Must only contain `R`, `L`, and `F`
 
-**Line 5**  
+### Line 5 - Blank Line
+
+- Sections off single grid data for subsequent `RobotDataSet(s)`
 - Blank line
 - Sections off `RobotDataSet`
-- Lines 3, 4, 5 loop until the end of file
 
----
+### Line 6 - Until EOF
+
+- Loops lines 3, 4 and 5
 
 ## Project & Implementation
 
@@ -46,14 +49,13 @@ The solution is built on **.NET 10** and uses the following NuGet packages:
 | xunit.runner.visualstudio   | 3.1.4   |
 
 ### Notes
+
 - I thoroughly enjoyed this coding challenge and hope you enjoy reviewing it.  
 - Since the UI was not the focus, I implemented the solution as a **test suite**.  
 - Initially, I considered a console application with file-reading loops, but opted against it for simplicity.  
 - A full clean-architecture implementation was also considered, but deemed overkill for the scope.  
 - All code resides in the test suite for straightforward execution.  
 - To run, simply clone the project, build and run tests.
-
----
 
 ## Running the Tests
 
