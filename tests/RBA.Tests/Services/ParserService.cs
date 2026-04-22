@@ -1,7 +1,7 @@
-﻿using RBA.Domain.Entities;
-using RBA.Infrastructure.Interfaces;
+﻿using RBA.Tests.Entities;
+using RBA.Tests.Interfaces;
 
-namespace RBA.Infrastructure.Services;
+namespace RBA.Tests.Services;
 
 public class ParserService(IValidationService validationService) : IParserService
 {

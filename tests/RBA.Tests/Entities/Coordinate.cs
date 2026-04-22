@@ -1,3 +1,3 @@
-﻿namespace RBA.Domain.Entities;
+﻿namespace RBA.Tests.Entities;
 
 public record Coordinate(int X, int Y);

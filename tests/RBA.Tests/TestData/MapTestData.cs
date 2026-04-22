@@ -1,5 +1,5 @@
-﻿using RBA.Domain.Entities;
-using RBA.Domain.Enums;
+﻿using RBA.Tests.Entities;
+using RBA.Tests.Enums;
 
 namespace RBA.Tests.TestData;
 

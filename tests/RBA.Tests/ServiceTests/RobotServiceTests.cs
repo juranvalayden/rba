@@ -1,6 +1,6 @@
 ﻿using Moq;
-using RBA.Infrastructure.Interfaces;
-using RBA.Infrastructure.Services;
+using RBA.Tests.Interfaces;
+using RBA.Tests.Services;
 using RBA.Tests.TestData;
 
 namespace RBA.Tests.ServiceTests;

@@ -1,4 +1,4 @@
-﻿namespace RBA.Domain.Enums;
+﻿namespace RBA.Tests.Enums;
 
 public enum InstructionType
 {

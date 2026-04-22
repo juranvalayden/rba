@@ -2,16 +2,6 @@
   <Folder Name="/solution items/">
     <File Path="README.md" />
   </Folder>
-  <Folder Name="/solution items/test data/" />
-  <Folder Name="/src/" />
-  <Folder Name="/src/1 - Presentation/" />
-  <Folder Name="/src/2 - Application/" />
-  <Folder Name="/src/3 - Infrastructure/">
-    <Project Path="src/RBA.Infrastructure/RBA.Infrastructure.csproj" Id="2fc7f657-d826-4264-87ed-3f02d24926b3" />
-  </Folder>
-  <Folder Name="/src/4 - Domain/">
-    <Project Path="src/RBA.Domain/RBA.Domain.csproj" Id="7f3c1c6e-4af6-4660-9463-f25bbbec36c6" />
-  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/RBA.Tests/RBA.Tests.csproj" />
   </Folder>

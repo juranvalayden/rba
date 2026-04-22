@@ -1,8 +1,8 @@
-﻿using RBA.Domain.Entities;
-using RBA.Domain.Enums;
-using RBA.Infrastructure.Interfaces;
+﻿using RBA.Tests.Entities;
+using RBA.Tests.Enums;
+using RBA.Tests.Interfaces;
 
-namespace RBA.Infrastructure.Services;
+namespace RBA.Tests.Services;
 
 public class MapService : IMapService
 {

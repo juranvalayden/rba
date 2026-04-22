@@ -1,4 +1,4 @@
-﻿using RBA.Domain.Enums;
+﻿using RBA.Tests.Enums;
 
 namespace RBA.Tests.TestData;
 

@@ -2,7 +2,7 @@
 An implementation of the "Martian Robots" following the spec documentation provided
 
 # Planning (Test)
-// input pattern
+input pattern
 // >> step 01: 1st line     = grid data
 // >> step 02: blank line
 // >> step 03: 2 line pairs = robot data

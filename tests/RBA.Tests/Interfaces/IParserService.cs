@@ -1,10 +1,8 @@
-﻿using RBA.Domain.Entities;
+﻿using RBA.Tests.Entities;
 
-namespace RBA.Infrastructure.Interfaces;
+namespace RBA.Tests.Interfaces;
 
 public interface IParserService
 {
     RobotDataSet[] Parse(string[] lines);
-
-
 }

@@ -1,6 +1,6 @@
-﻿using RBA.Domain.Enums;
+﻿using RBA.Tests.Enums;
 
-namespace RBA.Domain.Entities;
+namespace RBA.Tests.Entities;
 
 public class Grid(Coordinate coordinate)
 {
