@@ -1,53 +1,63 @@
 # RBA
-An implementation of the "Martian Robots" following the spec documentation provided
+An implementation of the **Martian Robots** problem, following the provided specification.
 
 ---
 
-## Planning - Thought Process & Assumptions
+## Planning – Thought Process & Assumptions
 
-#### Line 1
-Grid Data 
-1. Business Rules and Validations
-1.1 Space separated
-1.1 Max length of 3
-1.1 index 0, 2 - Only ints are valid
-1.1 Since it is mentioned that the grid is rectangular | X != Y
+### Grid Data (Line 1)
+**Business Rules & Validations**
+- Space-separated values  
+- Maximum length: 3 tokens  
+- Index 0 and 2 must be integers  
+- Grid must be rectangular → `X != Y`
 
-#### Line 2
-Sections single grid data for the following "RobotDataSet(s)"
+### Robot Data Sets (Lines 2–4)
+**Line 2**  
+- Sections off single grid data for subsequent `RobotDataSet(s)`
 
-#### Line 3 & 4
-Robot Data Sets
-1. Business Rules and Validations
-1.1. Starting block or initial position for robot
-1.1. Line 3
-1.1.1. Space separated
-1.1.1. Max length of 5
-1.1.1. index 0, 2 - Only ints are valid
-1.1.1. index 4 - Only contain a single "char/string" value which signifies a cardinal N, E, W, S (for now, this can be extended)
-1.1. Line 4
-1.1.1. String and should not exceed 100 chars
-1.1.1. Should only contain "R", "L" and "F"
+**Line 3 – Starting Block / Initial Position**
+- Space-separated values  
+- Maximum length: 5 tokens  
+- Index 0 and 2 must be integers  
+- Index 4 must contain a single character/string representing a cardinal direction: `N`, `E`, `W`, `S` (extensible)
+
+**Line 4 – Instructions**
+- String input, maximum length: 100 characters  
+- Must only contain `R`, `L`, and `F`
+
+**Line 5**  
+- Blank line
+- Sections off `RobotDataSet`
+- Lines 3, 4, 5 loop until the end of file
 
 ---
 
-## About the Project and Implementation
+## Project & Implementation
 
-The solution is built on .net10 and uses the following nuget packages, in order to run:
-| Nuget Package | Version |
-| coverlet.collector | 6.0.4 |
-| Microsoft.NET.Test.Sdk | 17.14.1 |
-| Moq | 4.20.72 |
-| xunit | 2.9.3 |
-| xunit.runner.visualstudio | 3.1.4|
+The solution is built on **.NET 10** and uses the following NuGet packages:
 
-- I thoroughly enjoyed the coding challenge and hope that you enjoyed reviewing it :)
-- Since it is mentioned that the UI should not be the focus, I went with simply using a test suite.
-- I was inclined to create a console application which followed a simple looping mechanism to allow files to be read however I moved away from that idea.
-- I was also going to have the solution implemented in full clean-architecture but it may have been overkill hence you will see it that all the code has been moved to test suite. 
-- You may simply clone the project and run the test suite
-- Use the terminal to execute 
-- cmd
-  ```sh
-  dotnet test <path_to_project>
-  ```
+| NuGet Package               | Version |
+|-----------------------------|---------|
+| Microsoft.NET.Test.Sdk      | 17.14.1 |
+| coverlet.collector          | 6.0.4   |
+| Moq                         | 4.20.72 |
+| xunit                       | 2.9.3   |
+| xunit.runner.visualstudio   | 3.1.4   |
+
+### Notes
+- I thoroughly enjoyed this coding challenge and hope you enjoy reviewing it.  
+- Since the UI was not the focus, I implemented the solution as a **test suite**.  
+- Initially, I considered a console application with file-reading loops, but opted against it for simplicity.  
+- A full clean-architecture implementation was also considered, but deemed overkill for the scope.  
+- All code resides in the test suite for straightforward execution.  
+- To run, simply clone the project, build and run tests.
+
+---
+
+## Running the Tests
+
+Use the terminal to execute:
+
+```sh
+dotnet test <path_to_project>
