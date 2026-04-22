@@ -8,10 +8,10 @@ An implementation of the "Martian Robots" following the spec documentation provi
 #### Line 1
 Grid Data 
 1. Business Rules and Validations
-1.1. Space separated
-1.1. Max length of 3
-1.1. index 0, 2 - Only ints are valid
-1.1. Since it is mentioned that the grid is rectangular | X != Y
+1.1 Space separated
+1.1 Max length of 3
+1.1 index 0, 2 - Only ints are valid
+1.1 Since it is mentioned that the grid is rectangular | X != Y
 
 #### Line 2
 Sections single grid data for the following "RobotDataSet(s)"
@@ -41,17 +41,13 @@ The solution is built on .net10 and uses the following nuget packages, in order 
 | xunit | 2.9.3 |
 | xunit.runner.visualstudio | 3.1.4|
 
+- I thoroughly enjoyed the coding challenge and hope that you enjoyed reviewing it :)
 - Since it is mentioned that the UI should not be the focus, I went with simply using a test suite.
 - I was inclined to create a console application which followed a simple looping mechanism to allow files to be read however I moved away from that idea.
 - I was also going to have the solution implemented in full clean-architecture but it may have been overkill hence you will see it that all the code has been moved to test suite. 
-
-You may simply clone the project and run the test suite
-
-Use the terminal to execute 
-
-* cmd
+- You may simply clone the project and run the test suite
+- Use the terminal to execute 
+- cmd
   ```sh
   dotnet test <path_to_project>
   ```
-
-  - I thoroughly enjoyed the coding challenge and hope that you enjoyed reviewing it :)
