@@ -1,5 +1,7 @@
-﻿using RBA.Domain.Enums;
+﻿using RBA.Domain.Entities;
+using RBA.Domain.Enums;
 using RBA.Infrastructure.Services;
+using RBA.Tests.TestData;
 
 namespace RBA.Tests.ServiceTests;
 
@@ -8,8 +10,7 @@ public class MapServiceTests
     private readonly MapService _sut = new();
 
     [Theory]
-    [InlineData(CardinalType.N, CardinalType.E)]
-    [InlineData(CardinalType.E, CardinalType.S)]
+    [MemberData(nameof(MapTestData.ValidRightTurn), MemberType = typeof(MapTestData))]
     public void TurnRight_ShouldReturnExpectedFacing(CardinalType input, CardinalType expected)
     {
         // Arrange & Act
@@ -20,8 +21,7 @@ public class MapServiceTests
     }
 
     [Theory]
-    [InlineData(CardinalType.N, CardinalType.W)]
-    [InlineData(CardinalType.W, CardinalType.S)]
+    [MemberData(nameof(MapTestData.ValidLeftTurn), MemberType = typeof(MapTestData))]
     public void TurnLeft_ShouldReturnExpectedFacing(CardinalType input, CardinalType expected)
     {
         // Arrange & Act
@@ -32,11 +32,7 @@ public class MapServiceTests
     }
 
     [Theory]
-    [InlineData("R", InstructionType.R)]
-    [InlineData("L", InstructionType.L)]
-    [InlineData("F", InstructionType.F)]
-    [InlineData("X", InstructionType.Unknown)]
-    [InlineData("", InstructionType.Unknown)]
+    [MemberData(nameof(MapTestData.InstructionData), MemberType = typeof(MapTestData))]
     public void GetInstructionType_ShouldReturnExpectedInstruction(string raw, InstructionType expected)
     {
         // Arrange & Act
@@ -47,17 +43,14 @@ public class MapServiceTests
     }
 
     [Theory]
-    [InlineData(CardinalType.N, 0, 1)]
-    [InlineData(CardinalType.S, 0, -1)]
-    [InlineData(CardinalType.E, 1, 0)]
-    [InlineData(CardinalType.W, -1, 0)]
-    public void GetUpdateCoordinateWith_ShouldReturnExpectedDelta(CardinalType facing, int expectedX, int expectedY)
+    [MemberData(nameof(MapTestData.CardinalData), MemberType = typeof(MapTestData))]
+    public void GetUpdateCoordinateWith_ShouldReturnExpectedCardinal(CardinalType facing, Coordinate expectedCoordinate)
     {
         // Arrange & Act
         var result = _sut.GetUpdateCoordinateWith(facing);
 
         // Assert
-        Assert.Equal(expectedX, result.X);
-        Assert.Equal(expectedY, result.Y);
+        Assert.Equal(expectedCoordinate.X, result.X);
+        Assert.Equal(expectedCoordinate.Y, result.Y);
     }
 }
