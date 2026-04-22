@@ -1,7 +1,7 @@
-﻿using RBA.Tests.Entities;
-using RBA.Tests.Enums;
+﻿using RBA.Tests.Domain.Entities;
+using RBA.Tests.Domain.Enums;
 
-namespace RBA.Tests.Interfaces;
+namespace RBA.Tests.Application.Interfaces;
 
 public interface IMapService
 {

@@ -1,4 +1,4 @@
-﻿namespace RBA.Tests.TestData;
+﻿namespace RBA.Tests.UnitTests.TestData;
 
 public static class RobotTestData
 {

@@ -1,9 +1,9 @@
 ﻿using Moq;
-using RBA.Tests.Interfaces;
-using RBA.Tests.Services;
-using RBA.Tests.TestData;
+using RBA.Tests.Application.Interfaces;
+using RBA.Tests.Application.Services;
+using RBA.Tests.UnitTests.TestData;
 
-namespace RBA.Tests.ServiceTests;
+namespace RBA.Tests.UnitTests.ServiceTests;
 
 public class RobotServiceTests
 {

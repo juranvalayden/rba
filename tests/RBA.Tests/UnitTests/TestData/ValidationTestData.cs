@@ -1,6 +1,6 @@
-﻿using RBA.Tests.Enums;
+﻿using RBA.Tests.Domain.Enums;
 
-namespace RBA.Tests.TestData;
+namespace RBA.Tests.UnitTests.TestData;
 
 public static class ValidationTestData
 {

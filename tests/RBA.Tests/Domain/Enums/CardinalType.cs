@@ -1,4 +1,4 @@
-﻿namespace RBA.Tests.Enums;
+﻿namespace RBA.Tests.Domain.Enums;
 
 public enum CardinalType
 {

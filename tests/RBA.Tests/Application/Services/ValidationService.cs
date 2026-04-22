@@ -1,8 +1,8 @@
-﻿using RBA.Tests.Entities;
-using RBA.Tests.Enums;
-using RBA.Tests.Interfaces;
+﻿using RBA.Tests.Application.Interfaces;
+using RBA.Tests.Domain.Entities;
+using RBA.Tests.Domain.Enums;
 
-namespace RBA.Tests.Services;
+namespace RBA.Tests.Application.Services;
 
 public class ValidationService : IValidationService
 {

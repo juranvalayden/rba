@@ -1,11 +1,11 @@
 ﻿using Moq;
-using RBA.Tests.Entities;
-using RBA.Tests.Enums;
-using RBA.Tests.Interfaces;
-using RBA.Tests.Services;
-using RBA.Tests.TestData;
+using RBA.Tests.Application.Interfaces;
+using RBA.Tests.Application.Services;
+using RBA.Tests.Domain.Entities;
+using RBA.Tests.Domain.Enums;
+using RBA.Tests.UnitTests.TestData;
 
-namespace RBA.Tests.ServiceTests;
+namespace RBA.Tests.UnitTests.ServiceTests;
 
 public class ParseServiceTests
 {
